@@ -87,7 +87,7 @@ class MainViewController: UIViewController {
     
     private lazy var resultLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18)
+        label.font = .systemFont(ofSize: 20)
         label.textColor = .white
         label.textAlignment = .center
         return label
