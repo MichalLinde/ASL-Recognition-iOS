@@ -28,6 +28,10 @@
 		901CA9EE294BC1BE00699F2E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 901CA9ED294BC1BE00699F2E /* GoogleService-Info.plist */; };
 		90474055294BCAD9005AB77A /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 90474054294BCAD9005AB77A /* Swinject */; };
 		90474057294BD0BE005AB77A /* AnyPublisherExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90474056294BD0BE005AB77A /* AnyPublisherExtension.swift */; };
+		90A1DC51294D040A00253DB3 /* LoadingVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC50294D040A00253DB3 /* LoadingVIew.swift */; };
+		90A1DC53294D073800253DB3 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC52294D073800253DB3 /* AVCaptureDeviceExtension.swift */; };
+		90A1DC55294D0E7200253DB3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC54294D0E7200253DB3 /* AlertManager.swift */; };
+		90A1DC57294D1D1700253DB3 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +50,10 @@
 		901CA9EB294BB4C000699F2E /* PredictionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionModel.swift; sourceTree = "<group>"; };
 		901CA9ED294BC1BE00699F2E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		90474056294BD0BE005AB77A /* AnyPublisherExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyPublisherExtension.swift; sourceTree = "<group>"; };
+		90A1DC50294D040A00253DB3 /* LoadingVIew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingVIew.swift; sourceTree = "<group>"; };
+		90A1DC52294D073800253DB3 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
+		90A1DC54294D0E7200253DB3 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
+		90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,16 +94,13 @@
 		901CA9B0294B32E900699F2E /* ASL Recognition */ = {
 			isa = PBXGroup;
 			children = (
+				90A1DC5B294D2B7900253DB3 /* SupportingFiles */,
+				90A1DC5A294D2B4A00253DB3 /* Application */,
 				901CA9ED294BC1BE00699F2E /* GoogleService-Info.plist */,
 				901CA9CD294BAC0B00699F2E /* API */,
 				901CA9C5294B3BBA00699F2E /* Utils */,
-				901CA9B1294B32E900699F2E /* AppDelegate.swift */,
-				901CA9B3294B32E900699F2E /* SceneDelegate.swift */,
-				901CA9B5294B32E900699F2E /* MainViewController.swift */,
 				901CA9BA294B32EB00699F2E /* Assets.xcassets */,
-				901CA9BC294B32EB00699F2E /* LaunchScreen.storyboard */,
 				901CA9BF294B32EB00699F2E /* Info.plist */,
-				901CA9DF294BB08000699F2E /* MainViewModel.swift */,
 			);
 			path = "ASL Recognition";
 			sourceTree = "<group>";
@@ -106,6 +111,8 @@
 				901CA9E6294BB13600699F2E /* Containers */,
 				901CA9C6294B3BCB00699F2E /* UIViewExtension.swift */,
 				90474056294BD0BE005AB77A /* AnyPublisherExtension.swift */,
+				90A1DC52294D073800253DB3 /* AVCaptureDeviceExtension.swift */,
+				90A1DC54294D0E7200253DB3 /* AlertManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -126,6 +133,27 @@
 				901CA9E9294BB29F00699F2E /* ViewModelContainer.swift */,
 			);
 			path = Containers;
+			sourceTree = "<group>";
+		};
+		90A1DC5A294D2B4A00253DB3 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				901CA9DF294BB08000699F2E /* MainViewModel.swift */,
+				901CA9B5294B32E900699F2E /* MainViewController.swift */,
+				90A1DC50294D040A00253DB3 /* LoadingVIew.swift */,
+				90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		90A1DC5B294D2B7900253DB3 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				901CA9B1294B32E900699F2E /* AppDelegate.swift */,
+				901CA9B3294B32E900699F2E /* SceneDelegate.swift */,
+				901CA9BC294B32EB00699F2E /* LaunchScreen.storyboard */,
+			);
+			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,10 +242,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				901CA9B6294B32E900699F2E /* MainViewController.swift in Sources */,
+				90A1DC57294D1D1700253DB3 /* UserInfoViewController.swift in Sources */,
+				90A1DC51294D040A00253DB3 /* LoadingVIew.swift in Sources */,
 				901CA9B2294B32E900699F2E /* AppDelegate.swift in Sources */,
 				901CA9EA294BB29F00699F2E /* ViewModelContainer.swift in Sources */,
 				90474057294BD0BE005AB77A /* AnyPublisherExtension.swift in Sources */,
+				90A1DC55294D0E7200253DB3 /* AlertManager.swift in Sources */,
 				901CA9CF294BAC2300699F2E /* Repository.swift in Sources */,
+				90A1DC53294D073800253DB3 /* AVCaptureDeviceExtension.swift in Sources */,
 				901CA9EC294BB4C000699F2E /* PredictionModel.swift in Sources */,
 				901CA9E8294BB14B00699F2E /* RepositoryContainer.swift in Sources */,
 				901CA9C7294B3BCB00699F2E /* UIViewExtension.swift in Sources */,

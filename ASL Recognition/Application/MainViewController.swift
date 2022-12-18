@@ -17,7 +17,6 @@ class MainViewController: UIViewController {
     
     private var viewModel: MainViewModelProtocol
     private var currentState = CurrentState.preview
-    //MARK: AVFoundation
     private var session: AVCaptureSession?
     private var videoOutput = AVCaptureMovieFileOutput()
     private var previewLayer = AVCaptureVideoPreviewLayer()
@@ -49,17 +48,42 @@ class MainViewController: UIViewController {
     }
     
     private func setupLayout() {
-        self.view.addSubviews(previewContainer, recordButton, resultLabelContainer)
+        self.view.addSubviews(previewContainer, recordButton, resultLabelContainer, loadingView, resultLabelFiller, infoButton)
+        
         previewContainer.fillSuperView()
         self.previewContainer.layer.addSublayer(previewLayer)
         
-        recordButton.anchor(bottom: self.view.safeBottomAnchor, paddingBottom: 20)
+        recordButton.anchor(
+            bottom: self.view.safeBottomAnchor,
+            paddingBottom: 20
+        )
         recordButton.centerX(inView: self.view)
         
-        resultLabelContainer.anchor(top: self.view.safeTopAnchor, left: self.view.leftAnchor, right: self.view.rightAnchor)
+        resultLabelContainer.anchor(
+            top: self.view.safeTopAnchor,
+            left: self.view.leftAnchor,
+            right: self.view.rightAnchor
+        )
         
         resultLabelContainer.addSubview(resultLabel)
         resultLabel.fillSuperView()
+        
+        loadingView.isHidden = true
+        loadingView.fillSuperView()
+        
+        resultLabelFiller.anchor(
+            top: self.view.topAnchor,
+            left: self.view.leftAnchor,
+            bottom: self.resultLabelContainer.topAnchor,
+            right: self.view.rightAnchor
+        )
+        
+        infoButton.anchor(
+            top: resultLabel.bottomAnchor,
+            right: self.view.rightAnchor,
+            paddingTop: 15,
+            paddingRight: 15
+        )
         
         self.checkCameraPermission()
     }
@@ -68,20 +92,35 @@ class MainViewController: UIViewController {
         
     private lazy var recordButton: UIButton = {
         let button = UIButton()
-        let buttonImage = UIImage(systemName: "record.circle")
         button.tintColor = .red
-        button.setImage(buttonImage, for: .normal)
-        button.setDimensions(height: 50, width: 50)
-        button.layer.cornerRadius = 25
+        button.setDimensions(height: 80, width: 80)
+        button.layer.cornerRadius = 40
         button.addTarget(self, action: #selector(recordButtonTapped), for: .touchUpInside)
-        button.backgroundColor = .white
+        button.backgroundColor = .black.withAlphaComponent(0.7)
+        button.addSubview(recordButtonImage)
+        recordButtonImage.center(inView: button)
         return button
+    }()
+    
+    private lazy var recordButtonImage: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(systemName: "record.circle")?.withTintColor(.red)
+        view.contentMode = .scaleAspectFit
+        view.setDimensions(height: 80, width: 80)
+        view.layer.cornerRadius = 40
+        return view
     }()
     
     private lazy var resultLabelContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .black.withAlphaComponent(0.7)
         view.setHeight(100)
+        return view
+    }()
+    
+    private lazy var resultLabelFiller: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black.withAlphaComponent(0.7)
         return view
     }()
     
@@ -93,14 +132,33 @@ class MainViewController: UIViewController {
         return label
     }()
     
+    private lazy var loadingView = LoadingView()
+    
+    private lazy var infoButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "questionmark"), for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = .black.withAlphaComponent(0.7)
+        button.addTarget(self, action: #selector(infoButtonTapped), for: .touchUpInside)
+        button.setDimensions(height: 42, width: 42)
+        button.layer.cornerRadius = 21
+        return button
+    }()
+    
     @objc func recordButtonTapped() {
         switch self.currentState {
         case .recording:
             self.videoOutput.stopRecording()
         case .preview:
             switchState()
-            self.recordButton.setImage(UIImage(systemName: "stop"), for: .normal)
+            self.recordButtonImage.image = UIImage.init(systemName: "stop")?.withTintColor(.red)
             self.videoOutput.startRecording(to: createTempFileURL(), recordingDelegate: self)
+        }
+    }
+    
+    @objc func infoButtonTapped() {
+        DispatchQueue.main.async {
+            self.present(UserInfoViewController(), animated: true)
         }
     }
     
@@ -113,13 +171,18 @@ class MainViewController: UIViewController {
         session.beginConfiguration()
         if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .unspecified) {
             do {
-                session.sessionPreset = .vga640x480
+                if device.isFocusModeSupported(.continuousAutoFocus) {
+                    try device.lockForConfiguration()
+                    device.focusMode = .continuousAutoFocus
+                    device.unlockForConfiguration()
+                }
+                session.sessionPreset = .hd1280x720
                 let input = try AVCaptureDeviceInput(device: device)
                 if session.canAddInput(input) {
                     session.addInput(input)
                 }
                 if session.canAddOutput(videoOutput) {
-                    videoOutput.maxRecordedDuration = CMTime(seconds: 5, preferredTimescale: 20)
+                    videoOutput.maxRecordedDuration = CMTime(seconds: 8, preferredTimescale: 20)
                     session.addOutput(videoOutput)
                 }
                 previewLayer.frame = self.previewContainer.bounds
@@ -150,52 +213,57 @@ class MainViewController: UIViewController {
                                                            FileManager.SearchPathDomainMask.userDomainMask, true).last
             let pathURL = NSURL.fileURL(withPath: path!)
             let fileURL = pathURL.appendingPathComponent("movie-\(NSDate.timeIntervalSinceReferenceDate).mov")
-            print(" video url:  \(fileURL)")
             return fileURL
         }
+    
+    private func showLoadingView() {
+        self.loadingView.isHidden = false
+        self.loadingView.spinner.startAnimating()
+    }
+    
+    private func hideLoadingView() {
+        self.loadingView.spinner.stopAnimating()
+        self.loadingView.isHidden = true
+    }
+    
+    private func showResultOnLabel(message: String) {
+        self.resultLabel.text = self.viewModel.getTextToDisplay(currentText: self.resultLabel.text, newText: message)
+    }
+    
+    func presentAlert(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        self.present(viewControllerToPresent, animated: true)
+        Task.init {
+            try await Task.sleep(nanoseconds: 2_500_000_000)
+            viewControllerToPresent.dismiss(animated: true)
+        }
+    }
 }
 
 extension MainViewController: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         if error != nil, let nserror = error as? NSError, nserror.code != -11810 {
-            print("\n\n\n ERROR occured \n \(String(describing: error)) \n\n\n")
-            print("\(nserror.code)")
+            print("\nERROR occured\n\(String(describing: error))\n")
         } else {
-            print("\n\n\n Video saved! \n \(outputFileURL) \n\n\n")
-//            UISaveVideoAtPathToSavedPhotosAlbum(outputFileURL.path, nil, nil, nil)
-            self.recordButton.setImage(UIImage(systemName: "record.circle"), for: .normal)
+            self.recordButtonImage.image = UIImage.init(systemName: "record.circle")?.withTintColor(.red)
             self.switchState()
             self.viewModel.getPrediction(url: outputFileURL)
+            self.loadingView.isHidden = false
+            self.loadingView.spinner.startAnimating()
         }
     }
-    
-    
-}
-
-extension AVCaptureDevice {
-    func set(frameRate: Double) {
-    guard let range = activeFormat.videoSupportedFrameRateRanges.first,
-        range.minFrameRate...range.maxFrameRate ~= frameRate
-        else {
-            print("Requested FPS is not supported by the device's activeFormat !")
-            return
-    }
-
-    do { try lockForConfiguration()
-        activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
-        activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
-        unlockForConfiguration()
-    } catch {
-        print("LockForConfiguration failed with error: \(error.localizedDescription)")
-    }
-  }
 }
 
 extension MainViewController: MainViewModelDelegate {
+    func hideLoadingScreen() {
+        DispatchQueue.main.async {
+            self.hideLoadingView()
+        }
+    }
+    
     func showPrediction(model: PredictionModel) {
         guard let message = model.message else { return }
         DispatchQueue.main.async {
-            (!message.isEmpty) ? (self.resultLabel.text = message) : (self.resultLabel.text = "Nothing was detected")
+            (!message.isEmpty) ? (self.showResultOnLabel(message: message)) : (self.presentAlert(AlertManager.showActionSheetMessage(message: "Sorry, no word was detected."), animated: true))
         }
     }
 }

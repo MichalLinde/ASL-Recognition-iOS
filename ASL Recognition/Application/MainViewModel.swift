@@ -10,10 +10,12 @@ import Foundation
 protocol MainViewModelProtocol: AnyObject {
     var delegate: MainViewModelDelegate? { get set }
     func getPrediction(url: URL)
+    func getTextToDisplay(currentText: String?, newText: String) -> String
 }
 
 protocol MainViewModelDelegate: AnyObject {
     func showPrediction(model: PredictionModel)
+    func hideLoadingScreen()
 }
 
 class MainViewModel: MainViewModelProtocol {
@@ -31,16 +33,17 @@ class MainViewModel: MainViewModelProtocol {
             do {
                 let videoUrl = try await repository?.saveVideo(inputUrl: url, filename: filename)
                 guard let videoUrl = videoUrl else {
-                    print("\n Something went wrong \n")
                     return
                 }
-                print(videoUrl.absoluteString)
                 guard let inputUrl = prepareStringURL(inputUrl: videoUrl) else { return }
                 let model = try await repository?.getPrediction(inputURL: inputUrl)
                 guard let model = model else { return }
                 self.delegate?.showPrediction(model: model)
+                self.delegate?.hideLoadingScreen()
+                self.repository?.deleteFileFromUrl(stringUrl: videoUrl.absoluteString)
+                self.removeFileAtUrl(fileUrl: url)
             } catch {
-                print("\n\nError in ViewModel\n\n")
+                print("\nError in ViewModel\n")
             }
         }
     }
@@ -51,12 +54,33 @@ class MainViewModel: MainViewModelProtocol {
     }
     
     private func prepareStringURL(inputUrl: URL) -> String? {
-        var stringUrl = inputUrl.absoluteString
-//        stringUrl = stringUrl.replacingOccurrences(of: ":", with: "%3A")
-//        stringUrl = stringUrl.replacingOccurrences(of: "/", with: "%2F")
-//        stringUrl = stringUrl.replacingOccurrences(of: "=", with: "%3D")
-//        stringUrl = stringUrl.replacingOccurrences(of: "?", with: "%3F")
-//        return stringUrl
+        let stringUrl = inputUrl.absoluteString
         return stringUrl.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+    }
+    
+    func getTextToDisplay(currentText: String?, newText: String) -> String {
+        if let text = currentText, !text.isEmpty {
+            let components = text.components(separatedBy: .whitespacesAndNewlines)
+            var words = components.filter{ !$0.isEmpty }
+            if words.count >= 5 {
+                words.remove(at: 0)
+                words.append(newText)
+                return words.joined(separator: " ")
+            } else {
+                return text + " \(newText)"
+            }
+        } else {
+            return newText
+        }
+    }
+    
+    private func removeFileAtUrl(fileUrl: URL) {
+        if FileManager.default.fileExists(atPath: fileUrl.path) {
+            do {
+                try FileManager.default.removeItem(atPath: fileUrl.path)
+            } catch {
+                print("\nError occured during file deletion\n")
+            }
+        }
     }
 }

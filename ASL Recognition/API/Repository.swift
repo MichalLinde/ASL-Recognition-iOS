@@ -15,9 +15,15 @@ import FirebaseAuth
 protocol RepositoryProtocol: AnyObject {
     func saveVideo(inputUrl: URL, filename: String) async throws -> URL
     func getPrediction(inputURL: String) async throws -> PredictionModel?
+    func deleteFileFromUrl(stringUrl: String)
 }
 
 class Repository: RepositoryProtocol {
+    
+    enum Constants {
+        static let ipAdrress = "192.168.1.3"
+//        static let ipAdrress = "172.20.10.7"
+    }
 
     private var storage = Storage.storage()
     private var bag = Set<AnyCancellable>()
@@ -27,18 +33,10 @@ class Repository: RepositoryProtocol {
             Future<URL, Error> { promise in
                 let storageRef = self.storage.reference()
                 let fileRef = storageRef.child(filename)
-                let uploadTask = fileRef.putFile(from: inputUrl, metadata: nil) { metadata, error in
-                    
-                    if error != nil {
-                        print("\n\nFirst ERROR \n\(String(describing: error))\n\n")
-                    }
-                    
-                    guard let metadata = metadata else { return }
-                    
-                    let size = metadata.size
+                _ = fileRef.putFile(from: inputUrl, metadata: nil) { metadata, error in
                     fileRef.downloadURL{ (url, error) in
                         if error != nil {
-                            print("\n\n Second ERROR \n\(String(describing: error))\n\n")
+                            return
                         }
                         guard let outputUrl = url else { return }
                         promise(.success(outputUrl))
@@ -53,7 +51,7 @@ class Repository: RepositoryProtocol {
     
     func getPrediction(inputURL: String) async throws -> PredictionModel? {
         
-        let url = URL(string: "http://192.168.1.3:5050/\(inputURL)")
+        let url = URL(string: "http://\(Constants.ipAdrress):5050/\(inputURL)")
         guard let url = url else { return nil }
         
         do {
@@ -61,8 +59,17 @@ class Repository: RepositoryProtocol {
             let model = try JSONDecoder().decode(PredictionModel.self, from: data)
             return model
         } catch {
-            print("\n\n Error fetching from API \n\n")
+            print("\nError fetching from API\n")
         }
         return nil
+    }
+    
+    func deleteFileFromUrl(stringUrl: String) {
+        let ref = storage.reference(forURL: stringUrl)
+        ref.delete { error in
+            if error != nil {
+                print("\nError occured during deletion\n\(String(describing: error))\n")
+            }
+        }
     }
 }
