@@ -16,6 +16,7 @@ protocol MainViewModelProtocol: AnyObject {
 protocol MainViewModelDelegate: AnyObject {
     func showPrediction(model: PredictionModel)
     func hideLoadingScreen()
+    func showErrorAlert(error: String)
 }
 
 class MainViewModel: MainViewModelProtocol {
@@ -42,8 +43,12 @@ class MainViewModel: MainViewModelProtocol {
                 self.delegate?.hideLoadingScreen()
                 self.repository?.deleteFileFromUrl(stringUrl: videoUrl.absoluteString)
                 self.removeFileAtUrl(fileUrl: url)
-            } catch {
-                print("\nError in ViewModel\n")
+            } catch (let error){
+                guard let error = error as? ApiError else {
+                    self.delegate?.showErrorAlert(error: "Sorry, something went wrong. Please try again.")
+                    return
+                }
+                self.delegate?.showErrorAlert(error: error.localizedDescription)
             }
         }
     }

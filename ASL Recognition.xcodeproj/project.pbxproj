@@ -32,6 +32,7 @@
 		90A1DC53294D073800253DB3 /* AVCaptureDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC52294D073800253DB3 /* AVCaptureDeviceExtension.swift */; };
 		90A1DC55294D0E7200253DB3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC54294D0E7200253DB3 /* AlertManager.swift */; };
 		90A1DC57294D1D1700253DB3 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */; };
+		90E298A5294FBF0000918DDF /* ApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E298A4294FBF0000918DDF /* ApiError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		90A1DC52294D073800253DB3 /* AVCaptureDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureDeviceExtension.swift; sourceTree = "<group>"; };
 		90A1DC54294D0E7200253DB3 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
+		90E298A4294FBF0000918DDF /* ApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 			children = (
 				901CA9CE294BAC2300699F2E /* Repository.swift */,
 				901CA9EB294BB4C000699F2E /* PredictionModel.swift */,
+				90E298A4294FBF0000918DDF /* ApiError.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -249,6 +252,7 @@
 				90474057294BD0BE005AB77A /* AnyPublisherExtension.swift in Sources */,
 				90A1DC55294D0E7200253DB3 /* AlertManager.swift in Sources */,
 				901CA9CF294BAC2300699F2E /* Repository.swift in Sources */,
+				90E298A5294FBF0000918DDF /* ApiError.swift in Sources */,
 				90A1DC53294D073800253DB3 /* AVCaptureDeviceExtension.swift in Sources */,
 				901CA9EC294BB4C000699F2E /* PredictionModel.swift in Sources */,
 				901CA9E8294BB14B00699F2E /* RepositoryContainer.swift in Sources */,
