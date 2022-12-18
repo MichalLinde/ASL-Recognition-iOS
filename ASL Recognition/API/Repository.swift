@@ -21,8 +21,8 @@ protocol RepositoryProtocol: AnyObject {
 class Repository: RepositoryProtocol {
     
     enum Constants {
-//        static let ipAdrress = "192.168.1.3"
-        static let ipAdrress = "172.20.10.7"
+        static let ipAdrress = "192.168.1.3"
+//        static let ipAdrress = "172.20.10.7"
     }
 
     private var storage = Storage.storage()

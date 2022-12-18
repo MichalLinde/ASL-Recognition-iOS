@@ -41,6 +41,7 @@ class MainViewModel: MainViewModelProtocol {
                 self.delegate?.showPrediction(model: model)
                 self.delegate?.hideLoadingScreen()
                 self.repository?.deleteFileFromUrl(stringUrl: videoUrl.absoluteString)
+                self.removeFileAtUrl(fileUrl: url)
             } catch {
                 print("\nError in ViewModel\n")
             }
@@ -70,6 +71,16 @@ class MainViewModel: MainViewModelProtocol {
             }
         } else {
             return newText
+        }
+    }
+    
+    private func removeFileAtUrl(fileUrl: URL) {
+        if FileManager.default.fileExists(atPath: fileUrl.path) {
+            do {
+                try FileManager.default.removeItem(atPath: fileUrl.path)
+            } catch {
+                print("\nError occured during file deletion\n")
+            }
         }
     }
 }
