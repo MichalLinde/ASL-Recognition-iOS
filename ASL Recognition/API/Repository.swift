@@ -19,6 +19,11 @@ protocol RepositoryProtocol: AnyObject {
 }
 
 class Repository: RepositoryProtocol {
+    
+    enum Constants {
+//        static let ipAdrress = "192.168.1.3"
+        static let ipAdrress = "172.20.10.7"
+    }
 
     private var storage = Storage.storage()
     private var bag = Set<AnyCancellable>()
@@ -46,7 +51,7 @@ class Repository: RepositoryProtocol {
     
     func getPrediction(inputURL: String) async throws -> PredictionModel? {
         
-        let url = URL(string: "http://192.168.1.3:5050/\(inputURL)")
+        let url = URL(string: "http://\(Constants.ipAdrress):5050/\(inputURL)")
         guard let url = url else { return nil }
         
         do {
