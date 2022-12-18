@@ -61,7 +61,7 @@ class MainViewModel: MainViewModelProtocol {
         if let text = currentText, !text.isEmpty {
             let components = text.components(separatedBy: .whitespacesAndNewlines)
             var words = components.filter{ !$0.isEmpty }
-            if words.count < 5 {
+            if words.count >= 5 {
                 words.remove(at: 0)
                 words.append(newText)
                 return words.joined(separator: " ")
