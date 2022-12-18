@@ -30,12 +30,19 @@ class Repository: RepositoryProtocol {
     
     func saveVideo(inputUrl: URL, filename: String) async throws -> URL {
         try await Deferred {
-            Future<URL, Error> { promise in
+            Future<URL, ApiError> { promise in
                 let storageRef = self.storage.reference()
                 let fileRef = storageRef.child(filename)
                 _ = fileRef.putFile(from: inputUrl, metadata: nil) { metadata, error in
+                    
+                    if error != nil {
+                        promise(.failure(ApiError.firebaseError))
+                        return
+                    }
+                    
                     fileRef.downloadURL{ (url, error) in
                         if error != nil {
+                            promise(.failure(ApiError.firebaseError))
                             return
                         }
                         guard let outputUrl = url else { return }
@@ -59,9 +66,8 @@ class Repository: RepositoryProtocol {
             let model = try JSONDecoder().decode(PredictionModel.self, from: data)
             return model
         } catch {
-            print("\nError fetching from API\n")
+            throw ApiError.apiError
         }
-        return nil
     }
     
     func deleteFileFromUrl(stringUrl: String) {

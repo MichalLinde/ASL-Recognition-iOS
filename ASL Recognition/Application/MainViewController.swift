@@ -193,7 +193,7 @@ class MainViewController: UIViewController {
                 device.set(frameRate: 20)
                 self.session = session
             } catch {
-                print(error)
+                self.presentAlert(AlertManager.showActionSheetMessage(message: "Sorry, there was an error during camera setup. Please try again."), animated: true, length: AlertLenght.error)
             }
         }
     }
@@ -230,10 +230,10 @@ class MainViewController: UIViewController {
         self.resultLabel.text = self.viewModel.getTextToDisplay(currentText: self.resultLabel.text, newText: message)
     }
     
-    func presentAlert(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+    func presentAlert(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil, length: AlertLenght) {
         self.present(viewControllerToPresent, animated: true)
         Task.init {
-            try await Task.sleep(nanoseconds: 2_500_000_000)
+            try await Task.sleep(nanoseconds: length.lenght)
             viewControllerToPresent.dismiss(animated: true)
         }
     }
@@ -242,7 +242,7 @@ class MainViewController: UIViewController {
 extension MainViewController: AVCaptureFileOutputRecordingDelegate {
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         if error != nil, let nserror = error as? NSError, nserror.code != -11810 {
-            print("\nERROR occured\n\(String(describing: error))\n")
+            self.presentAlert(AlertManager.showActionSheetMessage(message: "Sorry, an error occured during file processing. Please try again."), animated: true, length: AlertLenght.error)
         } else {
             self.recordButtonImage.image = UIImage.init(systemName: "record.circle")?.withTintColor(.red)
             self.switchState()
@@ -254,6 +254,13 @@ extension MainViewController: AVCaptureFileOutputRecordingDelegate {
 }
 
 extension MainViewController: MainViewModelDelegate {
+    func showErrorAlert(error: String) {
+        DispatchQueue.main.async {
+            self.hideLoadingView()
+            self.presentAlert(AlertManager.showActionSheetMessage(message: error), animated: true, length: AlertLenght.error)
+        }
+    }
+    
     func hideLoadingScreen() {
         DispatchQueue.main.async {
             self.hideLoadingView()
@@ -263,7 +270,21 @@ extension MainViewController: MainViewModelDelegate {
     func showPrediction(model: PredictionModel) {
         guard let message = model.message else { return }
         DispatchQueue.main.async {
-            (!message.isEmpty) ? (self.showResultOnLabel(message: message)) : (self.presentAlert(AlertManager.showActionSheetMessage(message: "Sorry, no word was detected."), animated: true))
+            (!message.isEmpty) ? (self.showResultOnLabel(message: message)) : (self.presentAlert(AlertManager.showActionSheetMessage(message: "Sorry, no word was detected."), animated: true, length: AlertLenght.output))
+        }
+    }
+}
+
+enum AlertLenght {
+    case error
+    case output
+    
+    var lenght: UInt64 {
+        switch self {
+        case .error:
+            return 4_000_000_000
+        case .output:
+            return 2_500_000_000
         }
     }
 }
