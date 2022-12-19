@@ -85,6 +85,9 @@ class MainViewController: UIViewController {
             paddingRight: 15
         )
         
+        self.view.insertSubview(noLandMarksPopup, aboveSubview: self.previewContainer)
+        noLandMarksPopup.fillSuperView()
+        
         self.checkCameraPermission()
     }
     
@@ -143,6 +146,12 @@ class MainViewController: UIViewController {
         button.setDimensions(height: 42, width: 42)
         button.layer.cornerRadius = 21
         return button
+    }()
+    
+    private lazy var noLandMarksPopup: NoLandmarksPopupView = {
+        let view = NoLandmarksPopupView()
+        view.alpha = .zero
+        return view
     }()
     
     @objc func recordButtonTapped() {
@@ -254,6 +263,12 @@ extension MainViewController: AVCaptureFileOutputRecordingDelegate {
 }
 
 extension MainViewController: MainViewModelDelegate {
+    func showNoLandmarksPopup() {
+        DispatchQueue.main.async {
+            self.noLandMarksPopup.animateUp()
+        }
+    }
+    
     func showErrorAlert(error: String) {
         DispatchQueue.main.async {
             self.hideLoadingView()

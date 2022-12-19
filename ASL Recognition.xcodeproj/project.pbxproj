@@ -33,6 +33,7 @@
 		90A1DC55294D0E7200253DB3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC54294D0E7200253DB3 /* AlertManager.swift */; };
 		90A1DC57294D1D1700253DB3 /* UserInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */; };
 		90E298A5294FBF0000918DDF /* ApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E298A4294FBF0000918DDF /* ApiError.swift */; };
+		90E298A72950ECF700918DDF /* NoLandmarksPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E298A62950ECF700918DDF /* NoLandmarksPopupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		90A1DC54294D0E7200253DB3 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoViewController.swift; sourceTree = "<group>"; };
 		90E298A4294FBF0000918DDF /* ApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiError.swift; sourceTree = "<group>"; };
+		90E298A62950ECF700918DDF /* NoLandmarksPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoLandmarksPopupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 				901CA9B5294B32E900699F2E /* MainViewController.swift */,
 				90A1DC50294D040A00253DB3 /* LoadingVIew.swift */,
 				90A1DC56294D1D1700253DB3 /* UserInfoViewController.swift */,
+				90E298A62950ECF700918DDF /* NoLandmarksPopupView.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 				901CA9E8294BB14B00699F2E /* RepositoryContainer.swift in Sources */,
 				901CA9C7294B3BCB00699F2E /* UIViewExtension.swift in Sources */,
 				901CA9B4294B32E900699F2E /* SceneDelegate.swift in Sources */,
+				90E298A72950ECF700918DDF /* NoLandmarksPopupView.swift in Sources */,
 				901CA9E0294BB08000699F2E /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
