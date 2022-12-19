@@ -17,6 +17,7 @@ protocol MainViewModelDelegate: AnyObject {
     func showPrediction(model: PredictionModel)
     func hideLoadingScreen()
     func showErrorAlert(error: String)
+    func showNoLandmarksPopup()
 }
 
 class MainViewModel: MainViewModelProtocol {
@@ -38,8 +39,16 @@ class MainViewModel: MainViewModelProtocol {
                 }
                 guard let inputUrl = prepareStringURL(inputUrl: videoUrl) else { return }
                 let model = try await repository?.getPrediction(inputURL: inputUrl)
-                guard let model = model else { return }
-                self.delegate?.showPrediction(model: model)
+                self.delegate?.hideLoadingScreen()
+                guard let model = model else {
+                    self.delegate?.showErrorAlert(error: "Sorry, something went wrong. Please try again.")
+                    return
+                }
+                if model.message == "no_landmarks" {
+                    self.delegate?.showNoLandmarksPopup()
+                } else {
+                    self.delegate?.showPrediction(model: model)
+                }
                 self.delegate?.hideLoadingScreen()
                 self.repository?.deleteFileFromUrl(stringUrl: videoUrl.absoluteString)
                 self.removeFileAtUrl(fileUrl: url)
