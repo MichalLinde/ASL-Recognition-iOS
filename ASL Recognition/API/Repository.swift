@@ -60,7 +60,7 @@ class Repository: RepositoryProtocol {
         
         let url = URL(string: "http://\(Constants.ipAdrress):5050/\(inputURL)")
         guard let url = url else { return nil }
-        
+
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             let model = try JSONDecoder().decode(PredictionModel.self, from: data)
