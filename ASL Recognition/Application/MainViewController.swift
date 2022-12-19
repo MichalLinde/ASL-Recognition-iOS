@@ -151,6 +151,7 @@ class MainViewController: UIViewController {
     private lazy var noLandMarksPopup: NoLandmarksPopupView = {
         let view = NoLandmarksPopupView()
         view.alpha = .zero
+        view.delegate = self
         return view
     }()
     
@@ -265,6 +266,7 @@ extension MainViewController: AVCaptureFileOutputRecordingDelegate {
 extension MainViewController: MainViewModelDelegate {
     func showNoLandmarksPopup() {
         DispatchQueue.main.async {
+            self.recordButton.isEnabled = false
             self.noLandMarksPopup.animateUp()
         }
     }
@@ -286,6 +288,14 @@ extension MainViewController: MainViewModelDelegate {
         guard let message = model.message else { return }
         DispatchQueue.main.async {
             (!message.isEmpty) ? (self.showResultOnLabel(message: message)) : (self.presentAlert(AlertManager.showActionSheetMessage(message: "Sorry, no word was detected."), animated: true, length: AlertLenght.output))
+        }
+    }
+}
+
+extension MainViewController: NoLandmarksPopupViewDelegate {
+    func closePopup() {
+        self.noLandMarksPopup.animateDown {
+            self.recordButton.isEnabled = true
         }
     }
 }

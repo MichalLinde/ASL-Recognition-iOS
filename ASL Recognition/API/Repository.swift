@@ -58,16 +58,17 @@ class Repository: RepositoryProtocol {
     
     func getPrediction(inputURL: String) async throws -> PredictionModel? {
         
-        let url = URL(string: "http://\(Constants.ipAdrress):5050/\(inputURL)")
-        guard let url = url else { return nil }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let model = try JSONDecoder().decode(PredictionModel.self, from: data)
-            return model
-        } catch {
-            throw ApiError.apiError
-        }
+//        let url = URL(string: "http://\(Constants.ipAdrress):5050/\(inputURL)")
+//        guard let url = url else { return nil }
+//
+//        do {
+//            let (data, _) = try await URLSession.shared.data(from: url)
+//            let model = try JSONDecoder().decode(PredictionModel.self, from: data)
+//            return model
+//        } catch {
+//            throw ApiError.apiError
+//        }
+        return PredictionModel(message: "no_landmarks")
     }
     
     func deleteFileFromUrl(stringUrl: String) {

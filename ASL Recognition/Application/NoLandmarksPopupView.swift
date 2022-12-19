@@ -14,6 +14,8 @@ protocol NoLandmarksPopupViewDelegate: AnyObject {
 
 class NoLandmarksPopupView: UIView {
     
+    weak var delegate: NoLandmarksPopupViewDelegate?
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
     }
@@ -140,7 +142,7 @@ class NoLandmarksPopupView: UIView {
     private lazy var container: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
-        view.addSubviews(contentLabel, understandButton)
+        view.addSubviews(contentLabel, understandButton, spacer)
         contentLabel.anchor(
             top: view.topAnchor,
             left: view.leftAnchor,
@@ -151,14 +153,20 @@ class NoLandmarksPopupView: UIView {
         )
         
         understandButton.anchor(
-            top: contentLabel.bottomAnchor,
             left: view.leftAnchor,
             bottom: view.bottomAnchor,
             right: view.rightAnchor,
-            paddingTop: 24,
             paddingLeft: 10,
             paddingBottom: 16,
             paddingRight: 10
+        )
+        
+        spacer.anchor(
+            top: contentLabel.bottomAnchor,
+            left: view.leftAnchor,
+            bottom: understandButton.topAnchor,
+            right: view.rightAnchor,
+            paddingTop: 24
         )
         return view
     }()
@@ -184,7 +192,13 @@ class NoLandmarksPopupView: UIView {
         return button
     }()
     
+    private lazy var spacer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
     @objc func understandButtonTapped() {
-        self.animateDown {}
+        self.delegate?.closePopup()
     }
 }
