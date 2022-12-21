@@ -23,6 +23,8 @@ class Repository: RepositoryProtocol {
     enum Constants {
         static let ipAdrress = "192.168.1.3"
 //        static let ipAdrress = "172.20.10.7"
+//        static let ipAdrress = "192.168.43.16"
+
     }
 
     private var storage = Storage.storage()
@@ -58,7 +60,7 @@ class Repository: RepositoryProtocol {
     
     func getPrediction(inputURL: String) async throws -> PredictionModel? {
         
-        let url = URL(string: "http://\(Constants.ipAdrress):5050/\(inputURL)")
+        let url = URL(string: "http://\(Constants.ipAdrress):5050/\(inputURL)/system/ios")
         guard let url = url else { return nil }
 
         do {

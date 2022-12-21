@@ -222,7 +222,7 @@ class MainViewController: UIViewController {
             let path = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory,
                                                            FileManager.SearchPathDomainMask.userDomainMask, true).last
             let pathURL = NSURL.fileURL(withPath: path!)
-            let fileURL = pathURL.appendingPathComponent("movie-\(NSDate.timeIntervalSinceReferenceDate).mov")
+            let fileURL = pathURL.appendingPathComponent("movie-\(NSDate.timeIntervalSinceReferenceDate).mp4")
             return fileURL
         }
     
@@ -256,6 +256,7 @@ extension MainViewController: AVCaptureFileOutputRecordingDelegate {
         } else {
             self.recordButtonImage.image = UIImage.init(systemName: "record.circle")?.withTintColor(.red)
             self.switchState()
+//            UISaveVideoAtPathToSavedPhotosAlbum(outputFileURL.path, nil, nil, nil)
             self.viewModel.getPrediction(url: outputFileURL)
             self.loadingView.isHidden = false
             self.loadingView.spinner.startAnimating()
